@@ -3,26 +3,33 @@ package utils;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.PageFactory;
 
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
+import PageObjects.BasePage;
+import PageObjects.ContactUs_Page;
+import PageObjects.Products_Page;
+
+
 
 public class DriverFactory {
 	public static WebDriver driver;
+	public static BasePage basepage;
+	public static ContactUs_Page contactUsPage;
+	public static Products_Page productsPage;
 
-	public WebDriver getDriver() throws Exception {
+	public WebDriver getDriver() {
 		try {
+			// Read Config
 			ReadConfigFile file = new ReadConfigFile();
 			String browserName = file.getBrowser();
 
 			switch (browserName) {
 
-			// firefox setup
 			case "firefox":
+				// code
 				if (null == driver) {
 					System.setProperty("webdriver.gecko.driver", Constant.GECKO_DRIVER_DIRECTORY);
 					DesiredCapabilities capabilities = DesiredCapabilities.firefox();
@@ -31,49 +38,35 @@ public class DriverFactory {
 				}
 				break;
 
-			// chrome setup
 			case "chrome":
+				// code
 				if (null == driver) {
 					System.setProperty("webdriver.chrome.driver", Constant.CHROME_DRIVER_DIRECTORY);
 					// CHROME OPTIONS
-					ChromeOptions options = new ChromeOptions();
-					driver = new ChromeDriver(options);
+					driver = new ChromeDriver();
 					driver.manage().window().maximize();
 				}
 				break;
 
-			// IE setup
 			case "ie":
+				// code
 				if (null == driver) {
-					DesiredCapabilities caps = DesiredCapabilities.internetExplorer();
+					DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
 					System.setProperty("webdriver.ie.driver", Constant.IE_DRIVER_DIRECTORY);
-					caps.setCapability("ignoreZoomSetting", true);
-					driver = new InternetExplorerDriver(caps);
+					capabilities.setCapability("ignoreZoomSetting", true);
+					driver = new InternetExplorerDriver(capabilities);
 					driver.manage().window().maximize();
 				}
 				break;
 			}
 		} catch (Exception e) {
-			System.out.println("Unable to load browser! - Exception: " + e.getMessage());
+			System.out.println("Unable to load browser: " + e.getMessage());
 		} finally {
 			driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
+			contactUsPage = PageFactory.initElements(driver, ContactUs_Page.class);
+			productsPage = PageFactory.initElements(driver, Products_Page.class);
+			basepage = PageFactory.initElements(driver, BasePage.class);
 		}
 		return driver;
 	}
-
-	@Before
-	public void setup() throws Throwable {
-		driver = getDriver();
-	}
-	
-	@After
-	public void teardown() { 
-		if(driver != null) {
-			driver.manage().deleteAllCookies();
-			driver.quit();
-		}
-	}
-
-	
 }
-

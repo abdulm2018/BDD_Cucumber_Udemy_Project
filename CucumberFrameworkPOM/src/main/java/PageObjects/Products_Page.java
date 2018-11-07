@@ -1,4 +1,4 @@
-package PageObjects;
+package pageObjects;
 
 import java.io.IOException;
 import org.openqa.selenium.WebElement;
@@ -26,3 +26,4 @@ public class Products_Page extends BasePage {
 		return voucherCodeValue;
 	}
 }
+

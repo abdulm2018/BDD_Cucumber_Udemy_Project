@@ -21,7 +21,7 @@ public class ContactUs_Page extends BasePage{
 		super();
 	}
 	
-	public ContactUs_Page getContactUsPage() throws IOException {
+	public ContactUs_Page getContactUsPage() throws Exception {
 		getDriver().get("http://www.webdriveruniversity.com/Contact-Us/contactus.html");
 		return new ContactUs_Page();
 	}
@@ -55,6 +55,7 @@ public class ContactUs_Page extends BasePage{
 	
 	public ContactUs_Page confirmContactUsFormSubmissionWasSuccessful() throws Exception {
 		WebElement thanksContactUsPage = getDriver().findElement(By.xpath(".//*[@id='contact_reply']/h1"));
+//		System.out.println(thanksContactUsPage.getText());
 		WaitUntilWebElementIsVisible(thanksContactUsPage);
 		Assert.assertEquals("thankyouforyourmessage!", thanksContactUsPage.getText().toLowerCase().replaceAll("[ ()0-9]", ""));
 		return new ContactUs_Page();
